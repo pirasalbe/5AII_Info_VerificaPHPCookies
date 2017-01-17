@@ -10,11 +10,10 @@
     }
     else if(isset($_POST['elimina']))
     {
-        foreach ($_COOKIE as $chiave => $valore) 
-        {
+        foreach ($_COOKIE as $chiave => $valore)
             if(isset($_REQUEST[$chiave]))
                 setcookie($chiave, "", null, "/");
-        }
+                
         header("Location: index.php");
     }
 ?>
