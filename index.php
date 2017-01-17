@@ -1,36 +1,21 @@
 <?php
-    if(!isset($_COOKIE["cookies"]))
-        $Cookie = "";
-    else
-        $Cookie = $_COOKIE["cookies"] . ",";
-    
-    $name=$valuee="";
     
     if(isset($_POST['invia']))
     {
         $name = $_REQUEST['nome'];
-        $valuee = $_REQUEST['valore'];
-        $Cookie = $Cookie . $name;
-        setcookie("cookies", $Cookie, time() + (86400 * 30), "/");
-        setcookie($name, $valuee, time() + (86400 * 30), "/");
+        $value = $_REQUEST['valore'];
+        $date = strtotime($_REQUEST['data']);
+        setcookie($name, $value, $date, "/");
+        header("Location: index.php");
     }
     else if(isset($_POST['elimina']))
     {
-        $cookies="";
-        foreach (explode(",", $Cookie) as &$c) 
+        foreach ($_COOKIE as $chiave => $valore) 
         {
-            if(isset($_REQUEST[$c]))
-                setcookie($c, "", time() - (86400 * 30), "/");
-            else if(strcmp($c,"") != 0)
-            {
-                if(strcmp($cookies,"") != 0)
-                    $cookies = $cookies . ",";
-                $cookies = $cookies . $c;
-            }
+            if(isset($_REQUEST[$chiave]))
+                setcookie($chiave, "", null, "/");
         }
-        
-        $Cookie = $cookies;
-        setcookie("cookies", $Cookie, time() + (86400 * 30), "/");
+        header("Location: index.php");
     }
 ?>
 
@@ -56,17 +41,13 @@
     				    <div class="row">
     				        <div class="col-sm-6">
                                 <?php
-                                    if(strcmp($Cookie,"") != 0)
+                                    if(count($_COOKIE)>0)
                                     {
-                                        foreach (explode(",", $Cookie) as &$c) 
+                                        foreach ($_COOKIE as $chiave => $valore) 
                                         {
-                                            if(!isset($_COOKIE[$c]))
-                                                $value = $valuee;
-                                            else
-                                                $value = $_COOKIE[$c];
-                                            echo "<table class='table table-bordered'><tbody><tr><td>" . $c . "</td></tr>";
-                                            echo "<tr><td>" . $value . "</td></tr>";
-                                            echo "<tr><td>Elimina <input type='checkbox' name=" . $c . "></td></tr></tbody></table>";
+                                            echo "<table class='table table-bordered'><tbody><tr><td>" . $chiave . "</td></tr>";
+                                            echo "<tr><td>" . $valore . "</td></tr>";
+                                            echo "<tr><td>Elimina <input type='checkbox' name=" . $chiave . "></td></tr></tbody></table>";
                                         }
                                         
                                         echo "<input type='submit' class='btn btn-default btn-block' name='elimina' value='Rimuovi cookies selezionati'>";
@@ -92,7 +73,7 @@
                                       </tr>
                                       <tr>
                                         <td>Data di scadenza: </td>
-                                        <td><input type="text" class="form-control" align="center" name="data"></td>
+                                        <td><input type="date" class="form-control" align="center" name="data"></td>
                                       </tr>
                                       <tr>
                                         <td colspan="2"><input class="btn btn-default btn-block" align="center" type="submit" name="invia" value="Invia"></td>
